@@ -4,6 +4,14 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>NFC Solutions — Tarjetas NFC para reseñas de Google</title>
+<meta name="description" content="Tarjetas NFC para que tus clientes te dejen una reseña 5⭐ en Google con solo un toque. Sin apps, sin escribir nada. Instalación y programación incluida. Servicio en Arequipa." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="NFC Solutions — Reseñas de Google con solo un toque" />
+<meta property="og:description" content="Tus clientes acercan el celular a la tarjeta y se abre directo tu página de reseñas de Google. Sin apps, sin escribir nada." />
+<meta property="og:image" content="https://floreshuamanikevinamilcar-tech.github.io/nfcsolutions/img/tarjeta2.jpg" />
+<meta property="og:url" content="https://floreshuamanikevinamilcar-tech.github.io/nfcsolutions/" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📶</text></svg>" />
 <style>
   :root {
     --ink: #0d1117;
@@ -244,6 +252,12 @@
     position: relative;
     overflow: hidden;
   }
+  .card-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
   .card-icon svg { width: 42%; height: 42%; }
   .card-icon .chip-dot {
     position: absolute;
@@ -415,9 +429,238 @@
   }
   .float-wa svg { width: 30px; height: 30px; }
 
-  @media (max-width: 720px) {
-    .steps { grid-template-columns: 1fr; }
+  /* ---------- REVEAL ON SCROLL ---------- */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
   }
+  [data-reveal].in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ---------- SHARE BUTTON ---------- */
+  .btn-share {
+    background: transparent;
+    color: var(--text-inv);
+    border: 1px solid var(--ink-line);
+  }
+  .btn-share:hover { background: rgba(255,255,255,0.08); }
+  .toast {
+    position: fixed;
+    bottom: 92px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--ink);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 999px;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 300;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- TRUST BADGES ---------- */
+  .trust-bar {
+    padding: 20px 20px;
+    border-top: 1px solid var(--paper-line);
+    border-bottom: 1px solid var(--paper-line);
+  }
+  .trust-bar .wrap {
+    display: flex;
+    justify-content: center;
+    gap: 34px;
+    flex-wrap: wrap;
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-mute);
+  }
+  .trust-item svg { color: var(--brand); flex-shrink: 0; }
+
+  /* ---------- CLICKABLE PRODUCT IMAGE ---------- */
+  .card-icon.clickable { cursor: pointer; }
+  .card-icon.clickable .zoom-hint {
+    position: absolute;
+    inset: 0;
+    background: rgba(13,17,23,0.0);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 10px;
+    opacity: 0;
+    transition: opacity 0.15s ease, background 0.15s ease;
+  }
+  .card-icon.clickable:hover .zoom-hint {
+    opacity: 1;
+    background: rgba(13,17,23,0.25);
+  }
+  .zoom-hint span {
+    background: rgba(255,255,255,0.92);
+    color: var(--ink);
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+  }
+
+  /* ---------- COMPARISON TABLE ---------- */
+  .compare { padding: 20px 20px 60px; }
+  .compare-scroll { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--paper-line); }
+  table.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 560px;
+    font-size: 13.5px;
+  }
+  table.compare-table th, table.compare-table td {
+    padding: 14px 16px;
+    text-align: center;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  table.compare-table th:first-child, table.compare-table td:first-child {
+    text-align: left;
+    color: var(--text-mute);
+    font-weight: 600;
+    width: 30%;
+  }
+  table.compare-table thead th {
+    background: var(--ink);
+    color: var(--text-inv);
+    font-size: 14px;
+  }
+  table.compare-table thead th:first-child { background: var(--ink); }
+  table.compare-table tbody tr:last-child td { border-bottom: none; }
+  table.compare-table .cell-price { font-weight: 800; font-size: 16px; }
+  table.compare-table td.rec { background: var(--brand-bg); }
+  table.compare-table .mini-wa {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--brand-dark);
+    text-decoration: none;
+  }
+
+  /* ---------- INSTALLED PHOTO SECTION ---------- */
+  .installed { padding: 60px 20px; background: var(--paper); }
+  .installed-frame {
+    border-radius: var(--radius);
+    overflow: hidden;
+    aspect-ratio: 16/8;
+    background: linear-gradient(135deg, var(--ink), #1c2530);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .installed-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .installed-frame .placeholder-note {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-inv-mute);
+    font-size: 13px;
+    text-align: center;
+    padding: 20px;
+  }
+  .installed-frame.img-missing img { display: none; }
+  .installed-frame.img-missing .placeholder-note { display: flex; }
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(13,17,23,0.55);
+    z-index: 400;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: var(--paper);
+    border-radius: 18px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-gallery {
+    aspect-ratio: 8.55/5.4;
+    background: linear-gradient(135deg, var(--ink), #1c2530);
+    position: relative;
+    overflow: hidden;
+  }
+  .modal-gallery img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .modal-thumbs {
+    display: flex;
+    gap: 6px;
+    padding: 10px 20px 0;
+  }
+  .modal-thumbs button {
+    width: 46px; height: 32px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    padding: 0;
+    cursor: pointer;
+    background: var(--ink-line, #ddd);
+  }
+  .modal-thumbs button.active { border-color: var(--brand); }
+  .modal-thumbs button img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .modal-body { padding: 20px 22px 24px; }
+  .modal-body .size-label { font-size: 11px; font-weight: 700; color: var(--brand); text-transform: uppercase; letter-spacing: 0.04em; }
+  .modal-body h3 { font-size: 21px; font-weight: 800; margin: 4px 0 4px; }
+  .modal-body .dims { font-size: 13px; color: var(--text-mute); margin-bottom: 14px; }
+  .modal-body .price { font-size: 26px; font-weight: 800; margin-bottom: 16px; }
+  .modal-body h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .install-steps { list-style: none; margin-bottom: 18px; }
+  .install-steps li {
+    display: flex;
+    gap: 10px;
+    font-size: 13.5px;
+    color: var(--text);
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--paper-line);
+  }
+  .install-steps li:last-child { border-bottom: none; }
+  .install-steps .step-num {
+    flex-shrink: 0;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--brand-bg);
+    color: var(--brand-dark);
+    font-size: 11px;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-body .buy-btn { width: 100%; }
 </style>
 </head>
 <body>
@@ -439,11 +682,15 @@
       <a class="btn btn-ghost" href="https://wa.me/51931939077?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20sobre%20las%20tarjetas%20NFC" target="_blank" rel="noopener">
         Escribir por WhatsApp
       </a>
+      <button class="btn btn-share" id="shareBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Compartir
+      </button>
     </div>
   </div>
 </header>
 
-<section class="how wrap">
+<section class="how wrap" data-reveal>
   <div class="section-title">¿Cómo funciona?</div>
   <p class="section-sub">Así de simple es para tu cliente dejarte una reseña.</p>
   <div class="steps">
@@ -473,7 +720,24 @@
   </div>
 </section>
 
-<section class="products wrap" id="productos">
+<section class="trust-bar">
+  <div class="wrap">
+    <div class="trust-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4.5 8-11V5l-8-3-8 3v6c0 6.5 8 11 8 11z"/></svg>
+      Servicio en Arequipa
+    </div>
+    <div class="trust-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      Configurada y lista para usar
+    </div>
+    <div class="trust-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5H12a8.38 8.38 0 0 1-8.5-8.5A8.5 8.5 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5z"/></svg>
+      Soporte directo por WhatsApp
+    </div>
+  </div>
+</section>
+
+<section class="products wrap" id="productos" data-reveal>
   <div class="section-title">Tarjetas disponibles</div>
   <p class="section-sub">Elige el tamaño que mejor se adapte a tu negocio. Todas incluyen programación lista para usar.</p>
 
@@ -481,9 +745,11 @@
 
     <!-- TAMAÑO 1 -->
     <div class="card">
-      <div class="card-icon">
+      <div class="card-icon clickable" onclick="openModal('t1')">
+        <img src="img/tarjeta1.jpg" alt="Tarjeta NFC Básica Tamaño 1" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
         <div class="chip-dot"></div>
-        <svg viewBox="0 0 24 24" fill="none" stroke="#4fd8c9" stroke-width="1.6"><path d="M6.5 9a5 5 0 0 1 0 6"/><path d="M9 6.5a9 9 0 0 1 0 11"/><circle cx="12" cy="12" r="2" fill="#4fd8c9" stroke="none"/></svg>
+        <svg style="display:none;" viewBox="0 0 24 24" fill="none" stroke="#4fd8c9" stroke-width="1.6"><path d="M6.5 9a5 5 0 0 1 0 6"/><path d="M9 6.5a9 9 0 0 1 0 11"/><circle cx="12" cy="12" r="2" fill="#4fd8c9" stroke="none"/></svg>
+        <div class="zoom-hint"><span>Ver detalles ↗</span></div>
       </div>
       <div class="size-label">Tamaño 1</div>
       <h3>Tarjeta NFC Básica</h3>
@@ -503,9 +769,11 @@
 
     <!-- TAMAÑO 2 -->
     <div class="card">
-      <div class="card-icon">
+      <div class="card-icon clickable" onclick="openModal('t2')">
+        <img src="img/tarjeta2.jpg" alt="Tarjeta NFC + QR Tamaño 2" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
         <div class="chip-dot"></div>
-        <svg viewBox="0 0 24 24" fill="none" stroke="#4fd8c9" stroke-width="1.6"><path d="M6.5 9a5 5 0 0 1 0 6"/><path d="M9 6.5a9 9 0 0 1 0 11"/><circle cx="12" cy="12" r="2" fill="#4fd8c9" stroke="none"/></svg>
+        <svg style="display:none;" viewBox="0 0 24 24" fill="none" stroke="#4fd8c9" stroke-width="1.6"><path d="M6.5 9a5 5 0 0 1 0 6"/><path d="M9 6.5a9 9 0 0 1 0 11"/><circle cx="12" cy="12" r="2" fill="#4fd8c9" stroke="none"/></svg>
+        <div class="zoom-hint"><span>Ver detalles ↗</span></div>
       </div>
       <div class="size-label">Tamaño 2</div>
       <h3>Tarjeta NFC + QR</h3>
@@ -526,9 +794,11 @@
 
     <!-- TAMAÑO 3 -->
     <div class="card">
-      <div class="card-icon">
+      <div class="card-icon clickable" onclick="openModal('t3')">
+        <img src="img/tarjeta3.jpg" alt="Tarjeta NFC + QR Grande Tamaño 3" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
         <div class="chip-dot"></div>
-        <svg viewBox="0 0 24 24" fill="none" stroke="#4fd8c9" stroke-width="1.6"><path d="M6.5 9a5 5 0 0 1 0 6"/><path d="M9 6.5a9 9 0 0 1 0 11"/><circle cx="12" cy="12" r="2" fill="#4fd8c9" stroke="none"/></svg>
+        <svg style="display:none;" viewBox="0 0 24 24" fill="none" stroke="#4fd8c9" stroke-width="1.6"><path d="M6.5 9a5 5 0 0 1 0 6"/><path d="M9 6.5a9 9 0 0 1 0 11"/><circle cx="12" cy="12" r="2" fill="#4fd8c9" stroke="none"/></svg>
+        <div class="zoom-hint"><span>Ver detalles ↗</span></div>
       </div>
       <div class="size-label">Tamaño 3</div>
       <h3>Tarjeta NFC + QR Grande</h3>
@@ -551,9 +821,11 @@
     <!-- PREMIUM - PRÓXIMAMENTE -->
     <div class="card premium">
       <span class="badge-soon">Próximamente</span>
-      <div class="card-icon">
+      <div class="card-icon clickable" onclick="openModal('t4')">
+        <img src="img/premium.jpg" alt="Tarjeta NFC Premium Personalizada" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
         <div class="chip-dot"></div>
-        <svg viewBox="0 0 24 24" fill="none" stroke="#4fd8c9" stroke-width="1.6"><path d="M6.5 9a5 5 0 0 1 0 6"/><path d="M9 6.5a9 9 0 0 1 0 11"/><circle cx="12" cy="12" r="2" fill="#4fd8c9" stroke="none"/></svg>
+        <svg style="display:none;" viewBox="0 0 24 24" fill="none" stroke="#4fd8c9" stroke-width="1.6"><path d="M6.5 9a5 5 0 0 1 0 6"/><path d="M9 6.5a9 9 0 0 1 0 11"/><circle cx="12" cy="12" r="2" fill="#4fd8c9" stroke="none"/></svg>
+        <div class="zoom-hint"><span>Ver detalles ↗</span></div>
       </div>
       <div class="size-label">Personalizada</div>
       <h3>Tarjeta Premium con tu logo</h3>
@@ -571,7 +843,80 @@
   </div>
 </section>
 
-<section class="faq wrap">
+<section class="compare wrap" data-reveal>
+  <div class="section-title">Compara los tamaños</div>
+  <p class="section-sub">Todos incluyen instalación y programación lista para usar.</p>
+  <div class="compare-scroll">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Tamaño 1</th>
+          <th>Tamaño 2</th>
+          <th>Tamaño 3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Dimensiones</td>
+          <td>8.55 × 5.4 cm</td>
+          <td>12.75 × 7.6 cm</td>
+          <td>14 × 12 cm</td>
+        </tr>
+        <tr>
+          <td>Chip NFC</td>
+          <td>✅</td>
+          <td>✅</td>
+          <td>✅</td>
+        </tr>
+        <tr>
+          <td>Código QR de respaldo</td>
+          <td>—</td>
+          <td>✅</td>
+          <td>✅</td>
+        </tr>
+        <tr>
+          <td>Colores disponibles</td>
+          <td>Blanco</td>
+          <td>Blanco / Negro</td>
+          <td>Blanco / Negro</td>
+        </tr>
+        <tr>
+          <td>Ideal para</td>
+          <td>Mesa, caja chica</td>
+          <td class="rec">Mostrador (recomendada)</td>
+          <td>Recepción, mayor visibilidad</td>
+        </tr>
+        <tr>
+          <td>Precio</td>
+          <td class="cell-price">S/ 35</td>
+          <td class="cell-price rec">S/ 50</td>
+          <td class="cell-price">S/ 69</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><a class="mini-wa" href="https://wa.me/51931939077?text=Hola%2C%20quiero%20pedir%20la%20Tarjeta%20NFC%20B%C3%A1sica%20Tama%C3%B1o%201%20(S%2F%2035)" target="_blank" rel="noopener">Pedir →</a></td>
+          <td class="rec"><a class="mini-wa" href="https://wa.me/51931939077?text=Hola%2C%20quiero%20pedir%20la%20Tarjeta%20NFC%20%2B%20QR%20Tama%C3%B1o%202%20(S%2F%2050)" target="_blank" rel="noopener">Pedir →</a></td>
+          <td><a class="mini-wa" href="https://wa.me/51931939077?text=Hola%2C%20quiero%20pedir%20la%20Tarjeta%20NFC%20%2B%20QR%20Tama%C3%B1o%203%20(S%2F%2069)" target="_blank" rel="noopener">Pedir →</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="installed wrap" data-reveal>
+  <div class="section-title">Así se ve instalada</div>
+  <p class="section-sub">Colócala en tu mostrador, mesa o recepción — donde tu cliente la vea justo al terminar su compra.</p>
+  <div class="installed-frame" id="installedFrame">
+    <img src="img/instalada.jpg" alt="Tarjeta NFC instalada en un negocio" onerror="this.parentElement.classList.add('img-missing')" />
+    <div class="placeholder-note">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      Foto de instalación próximamente
+    </div>
+  </div>
+</section>
+
+<section class="faq wrap" data-reveal>
   <div class="section-title">Preguntas frecuentes</div>
   <details class="faq-item">
     <summary>¿Funciona en cualquier celular? <span class="chev">＋</span></summary>
@@ -594,9 +939,149 @@
   <div class="service-area">Servicio en Arequipa. Consulta por otras ciudades.</div>
 </footer>
 
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose" aria-label="Cerrar">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.6"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-gallery" id="modalGallery">
+      <img id="modalMainImg" src="" alt="" onerror="this.style.opacity='0.15'" />
+    </div>
+    <div class="modal-thumbs" id="modalThumbs"></div>
+    <div class="modal-body">
+      <div class="size-label" id="modalSizeLabel"></div>
+      <h3 id="modalName"></h3>
+      <div class="dims" id="modalDims"></div>
+      <div class="price" id="modalPrice"></div>
+      <h4>Cómo se instala</h4>
+      <ul class="install-steps">
+        <li><span class="step-num">1</span> Confirma tu pedido por WhatsApp y te la enviamos ya programada.</li>
+        <li><span class="step-num">2</span> Pégala en tu mostrador, mesa o recepción con la cinta incluida.</li>
+        <li><span class="step-num">3</span> Tu cliente acerca su celular y se abre tu página de reseñas al toque.</li>
+      </ul>
+      <a class="buy-btn" id="modalBuyBtn" href="#" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Link copiado</div>
+
 <a class="float-wa" href="https://wa.me/51931939077?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20sobre%20las%20tarjetas%20NFC" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
   <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.001 2C6.478 2 2 6.478 2 12c0 1.816.478 3.523 1.317 5.001L2 22l5.128-1.316A9.937 9.937 0 0 0 12.001 22C17.523 22 22 17.522 22 12S17.523 2 12.001 2zm0 18.182a8.16 8.16 0 0 1-4.166-1.146l-.299-.177-3.098.795.826-3.016-.194-.31A8.146 8.146 0 0 1 3.818 12c0-4.511 3.671-8.182 8.183-8.182 4.511 0 8.181 3.671 8.181 8.182 0 4.512-3.67 8.182-8.181 8.182z"/></svg>
 </a>
 
+<script>
+  // ---------- datos de productos para el modal ----------
+  const PRODUCTS = {
+    t1: {
+      size: "Tamaño 1", name: "Tarjeta NFC Básica", dims: "8.55 × 5.4 cm", price: "S/ 35",
+      images: ["img/tarjeta1.jpg", "img/tarjeta1-2.jpg", "img/tarjeta1-3.jpg"],
+      wa: "https://wa.me/51931939077?text=Hola%2C%20quiero%20pedir%20la%20Tarjeta%20NFC%20B%C3%A1sica%20Tama%C3%B1o%201%20(S%2F%2035)",
+    },
+    t2: {
+      size: "Tamaño 2", name: "Tarjeta NFC + QR", dims: "12.75 × 7.6 cm · base 5 cm", price: "S/ 50",
+      images: ["img/tarjeta2.jpg", "img/tarjeta2-2.jpg", "img/tarjeta2-3.jpg"],
+      wa: "https://wa.me/51931939077?text=Hola%2C%20quiero%20pedir%20la%20Tarjeta%20NFC%20%2B%20QR%20Tama%C3%B1o%202%20(S%2F%2050)",
+    },
+    t3: {
+      size: "Tamaño 3", name: "Tarjeta NFC + QR Grande", dims: "14 × 12 cm · base 5 cm", price: "S/ 69",
+      images: ["img/tarjeta3.jpg", "img/tarjeta3-2.jpg"],
+      wa: "https://wa.me/51931939077?text=Hola%2C%20quiero%20pedir%20la%20Tarjeta%20NFC%20%2B%20QR%20Tama%C3%B1o%203%20(S%2F%2069)",
+    },
+    t4: {
+      size: "Personalizada", name: "Tarjeta Premium con tu logo", dims: "Diseño impreso sobre la tarjeta", price: "Reserva tu cupo",
+      images: ["img/premium.jpg", "img/premium-2.jpg", "img/premium-3.jpg", "img/premium-4.jpg"],
+      wa: "https://wa.me/51931939077?text=Hola%2C%20quiero%20reservar%20la%20Tarjeta%20Premium%20Personalizada%20cuando%20est%C3%A9%20disponible",
+    },
+  };
+
+  const modalOverlay = document.getElementById("modalOverlay");
+  const modalMainImg = document.getElementById("modalMainImg");
+  const modalThumbs = document.getElementById("modalThumbs");
+
+  function openModal(key) {
+    const p = PRODUCTS[key];
+    if (!p) return;
+    document.getElementById("modalSizeLabel").textContent = p.size;
+    document.getElementById("modalName").textContent = p.name;
+    document.getElementById("modalDims").textContent = p.dims;
+    document.getElementById("modalPrice").textContent = p.price;
+    document.getElementById("modalBuyBtn").href = p.wa;
+    document.getElementById("modalBuyBtn").textContent = key === "t4" ? "Reservar por WhatsApp" : "Pedir por WhatsApp";
+
+    modalMainImg.style.opacity = "1";
+    modalMainImg.src = p.images[0];
+
+    // Solo mostramos miniaturas de imágenes que sí existen
+    modalThumbs.innerHTML = "";
+    p.images.forEach((src, i) => {
+      const btn = document.createElement("button");
+      btn.className = i === 0 ? "active" : "";
+      const img = document.createElement("img");
+      img.src = src;
+      img.onerror = () => { btn.style.display = "none"; };
+      img.onclick = null;
+      btn.appendChild(img);
+      btn.addEventListener("click", () => {
+        modalMainImg.src = src;
+        modalThumbs.querySelectorAll("button").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+      modalThumbs.appendChild(btn);
+    });
+
+    modalOverlay.classList.add("show");
+  }
+
+  function closeModal() {
+    modalOverlay.classList.remove("show");
+  }
+
+  document.getElementById("modalClose").addEventListener("click", closeModal);
+  modalOverlay.addEventListener("click", (e) => { if (e.target === modalOverlay) closeModal(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+
+  // ---------- compartir ----------
+  const toast = document.getElementById("toast");
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 2200);
+  }
+
+  document.getElementById("shareBtn").addEventListener("click", async () => {
+    const shareData = {
+      title: "NFC Solutions — Reseñas de Google con solo un toque",
+      text: "Mira estas tarjetas NFC para conseguir reseñas de Google al toque:",
+      url: window.location.href,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        showToast("Link copiado ✓");
+      }
+    } catch (e) {
+      // el usuario canceló el share, no hacemos nada
+    }
+  });
+
+  // ---------- animación al hacer scroll ----------
+  const revealEls = document.querySelectorAll("[data-reveal]");
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach((el) => io.observe(el));
+  } else {
+    revealEls.forEach((el) => el.classList.add("in-view"));
+  }
+</script>
 </body>
 </html>
